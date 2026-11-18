@@ -54,5 +54,9 @@ ok("no model → Incomplete", riskTier(a).tier === "Incomplete");
 a = laser({ cls: "4", open: "yes", service: "no", eyewear: "yes", eyeOD: "3" });
 ok("eyewear OD 3 vs required 5 → finding", riskTier(a, { requiredOD: 5, nm: "1064" }).findings.some(f => f.id === "eyeOD"));
 
+// Every finding carries its program section.
+a = laser({ cls: "4", open: "yes", service: "yes", stops: "no", sop: "no", loto: "no", nb_lgac: "yes", nbc_lgac: "no" });
+ok("every finding has a program section", riskTier(a).findings.every(f => f.ref), riskTier(a).findings);
+
 console.log(fails ? `${fails} FAILED` : "ALL PASS");
 process.exit(fails ? 1 : 0);

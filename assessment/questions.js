@@ -208,6 +208,15 @@ export const LOTO = q({ id: "loto", sec: "nonbeam", good: "yes", cat: "laser", c
   rec: "Write a machine-specific LOTO procedure that covers the laser power supply and discharging stored energy (capacitors) before service.",
   show: a => a.service === "yes" || a["nb_elec"] === "yes" });
 
+
+// OEMS-IH-LSO-001 section each finding falls under, printed in the report.
+export const REF = { clsIn: "6.1.1", alignLow: "6.8.2", alignAuth: "6.8.1", intlk: "6.5.1", intlkTest: "6.5.3", windows: "6.5.1",
+  housing: "6.11.1", modified: "6.4.2", area: "6.6.1", signs: "6.11.2", path: "6.5.1", walkway: "6.5.1", stops: "6.5.1",
+  reflect: "6.8.3", optics: "2.2", key: "6.5.1", people: "6.6.2", eyewear: "6.10.1", eyeLabel: "6.10.2", eyeCond: "6.10.3",
+  eyeOD: "6.10.2", lso: "5.2.1", inventory: "6.2.1", sop: "6.7.1", training: "6.15.1", contingency: "6.14",
+  visitors: "6.16", medical: "6.13.1", loto: "6.9.1" };
+export const refFor = id => REF[id] || (id.startsWith("nb_") ? "6.12.1" : "");
+
 const ORDER = { engineering: 0, administrative: 1, ppe: 2 };
 
 // Questions that show for these answers.
@@ -254,7 +263,7 @@ export function findings(a, calc = {}) {
     if (a[`nb_${h.id}`] === "yes" && a[`nbc_${h.id}`] === "no") out.push({ id: `nb_${h.id}`, sec: "nonbeam",
       cat: "environment", control: "engineering", text: `Uncontrolled non-beam hazard: ${h.name}.`, rec: `Put controls in place: ${h.control}.` });
   }
-  return out.sort((x, y) => ORDER[x.control] - ORDER[y.control]);
+  return out.map(x => ({ ...x, ref: refFor(x.id) })).sort((x, y) => ORDER[x.control] - ORDER[y.control]);
 }
 
 // Risk tier. Rules as approved:

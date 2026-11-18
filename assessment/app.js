@@ -222,6 +222,7 @@ document.addEventListener("change", e => { if (e.target.closest("#lhe")) update(
 try { const d = new Date(); $("date").value = new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); } catch (e) {}
 
 // ---------- Report ----------
+const TOOL_VERSION = "1.1 (2026-11-18)";
 const CAT = { laser: "The laser", environment: "The environment", personnel: "The people" };
 const CTRL = { engineering: "Engineering control", administrative: "Administrative control", ppe: "PPE" };
 const val = id => esc($(id).value.trim()) || "—";
@@ -243,7 +244,7 @@ function buildReport() {
   const byCat = Object.keys(CAT).map(k => {
     const list = f.filter(x => x.cat === k);
     return `<h3>${CAT[k]}</h3>` + (list.length
-      ? `<table class="rt"><thead><tr><th>Finding</th><th>Recommendation</th><th>Control type</th></tr></thead><tbody>${list.map(x => `<tr><td>${esc(x.text)}</td><td>${esc(x.rec)}</td><td>${CTRL[x.control]}</td></tr>`).join("")}</tbody></table>`
+      ? `<table class="rt find"><thead><tr><th>Finding</th><th>Recommendation</th><th>Section</th><th>Control type</th><th>Owner</th><th>Due date</th></tr></thead><tbody>${list.map(x => `<tr><td>${esc(x.text)}</td><td>${esc(x.rec)}</td><td>${esc(x.ref)}</td><td>${CTRL[x.control]}</td><td></td><td></td></tr>`).join("")}</tbody></table>`
       : "<p>No findings.</p>");
   }).join("");
   const eyeCheck = !c.ok || !(c.requiredOD > 0) ? "No eyewear OD was calculated." :
@@ -273,7 +274,7 @@ function buildReport() {
     ${c.diagrams(w).map(p => `<div class="diagram">${own(p)}</div>`).join("")}` : `<p>${esc(c.msg || "No calculations entered.")}</p>`;
 
   $("report").innerHTML = `
-  <header class="rh"><div><strong>OEMS</strong> · Occupational Exposure Management Systems LLC</div><div>Laser Safety Assessment Report</div></header>
+  <header class="rh"><div><strong>OEMS</strong> · Occupational Exposure Management Systems LLC</div><div>Laser Safety Assessment Report · tool version ${TOOL_VERSION}</div></header>
   <h1>Laser Safety Assessment: ${val("name")}</h1>
   <p class="rnote"><strong>Owner self-assessment.</strong> This report is based on the answers entered by the preparer. It is not a professional evaluation by OEMS.</p>
   <div class="rtier tier-${t.tier.toLowerCase()}"><span>Overall risk</span><strong>${t.tier}</strong><span>${t.reasons.map(esc).join(" ")}${reqCalcMissing ? " The required beam calculations were not completed." : ""}</span></div>
@@ -284,7 +285,7 @@ function buildReport() {
   ${t.missing ? `<p><strong>Incomplete:</strong> ${t.missing.length} item(s) were not answered, so no risk tier was given.</p>` : ""}
 
   <h2>2. Scope and method</h2>
-  <p>One laser system, assessed with the OEMS Laser Safety Assessment against ANSI Z136.1-2022 (Safe Use of Lasers). The assessment covers the laser and its enclosure, the environment it is used in, and the people who may be exposed, for normal operation and for service and alignment. Beam calculations ${req ? "were required" : "were optional"} for this laser.</p>
+  <p>One laser system, assessed with the OEMS Laser Safety Assessment against ANSI Z136.1-2022 (Safe Use of Lasers). The assessment covers the laser and its enclosure, the environment it is used in, and the people who may be exposed, for normal operation and for service and alignment. Beam calculations ${req ? "were required" : "were optional"} for this laser. Program sections refer to the OEMS Laser Safety Officer Program (OEMS-IH-LSO-001). Once the Laser Safety Officer has reviewed and signed it, this report is the hazard evaluation record under Section 6.3.3 of that program.</p>
 
   <h2>3. Laser</h2>
   <table class="rt"><tbody>
@@ -301,7 +302,7 @@ function buildReport() {
   ${c.ok && c.r.nohd > 0 ? `<div class="diagram">${own(DIAGRAMS["laser-nhz-direct-beam"]({ a: c.input.a, phi: c.input.phi, rNHZ: c.r.nohd }, w))}</div>` : ""}
 
   <h2>5. Findings and recommendations</h2>
-  <p>Grouped as in an ANSI Z136.1 hazard evaluation. Within each group, engineering controls come first, then administrative controls, then PPE.</p>
+  <p>Grouped as in an ANSI Z136.1 hazard evaluation. Within each group, engineering controls come first, then administrative controls, then PPE. Write in an owner and a due date for each recommendation.</p>
   ${byCat}
 
   <h2>6. Answers</h2>
@@ -321,7 +322,7 @@ function buildReport() {
   <p>The inputs, MPE and results exactly as calculated by the OEMS Laser Safety Assessment for this report.</p>
   ${calcApp}
 
-  <p class="rfoot">For estimation only. An owner self-assessment based on the preparer's answers, not a professional evaluation by OEMS. The Laser Safety Officer approves the eyewear for each application. © 2026 Occupational Exposure Management Systems LLC.</p>`;
+  <p class="rfoot">An owner self-assessment based on the preparer's answers, not a professional evaluation by OEMS. The results depend on those answers and are to be reviewed and signed by the Laser Safety Officer before they are relied on. The Laser Safety Officer approves the eyewear for each application. © 2026 Occupational Exposure Management Systems LLC.</p>`;
 }
 
 $("print").addEventListener("click", () => { buildReport(); window.print(); });

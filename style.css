@@ -235,6 +235,7 @@ ul.list li { padding: 8px 0; border-bottom: 1px solid var(--line); }
   .rt th { background: #f3f4f6; font-weight: 600; }
   .rt tr, .diagram { break-inside: avoid; }
   .sign td { height: 26px; }
+  .find { overflow-wrap: break-word; } .find th:nth-child(1) { width: 24%; } .find th:nth-child(2) { width: 27%; } .find th:nth-child(3) { width: 10%; } .find th:nth-child(4) { width: 16%; } .find th:nth-child(5) { width: 12%; } .find th:nth-child(6) { width: 11%; }
   .report .diagram svg { max-width: 100%; height: auto; }
   .rfoot { margin-top: 16px; font-size: 8.5pt; color: #444; }
 }
