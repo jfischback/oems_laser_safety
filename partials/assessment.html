@@ -1,0 +1,122 @@
+<main class="lhe">
+<a class="back" href="../">All laser safety tools</a>
+<h1>Laser Safety Assessment</h1>
+<p class="how">Answer the questions for one laser. The page works out which calculations are required, calculates the eyewear OD and hazard zones, ranks the risk High, Medium or Low, and prints the report. Results update as you type.</p>
+
+<div class="lhe-notice">
+  <strong>Self-assessment.</strong> This is an owner self-assessment based on the answers you enter. It is not a professional evaluation by OEMS. Use the class printed on the laser's label and the specifications in the manufacturer's manual.
+</div>
+
+<form id="lhe" novalidate>
+  <section class="lhe-sec">
+    <h2>1. Laser</h2>
+    <label class="row"><span class="name">Laser name or ID</span><input id="name" type="text" autocomplete="off"><span class="unit"></span></label>
+    <label class="row"><span class="name">Manufacturer</span><input id="mfr" type="text" autocomplete="off"><span class="unit"></span></label>
+    <label class="row"><span class="name">Model</span><input id="model" type="text" autocomplete="off"><span class="unit"></span></label>
+    <label class="row"><span class="name">Serial number</span><input id="serial" type="text" autocomplete="off"><span class="unit"></span></label>
+    <label class="row"><span class="name">Location (building, room, line)</span><input id="loc" type="text" autocomplete="off"><span class="unit"></span></label>
+    <label class="row"><span class="name">Class on the label</span>
+      <select id="cls"><option value="">Choose</option><option>1</option><option>1M</option><option>2</option><option>2M</option><option>3R</option><option>3B</option><option>4</option></select><span class="unit"></span></label>
+    <label class="row low-only"><span class="name">Is there a higher-class laser inside the enclosure? <small class="lhe-hint">Check the manual or the service label. Many Class 1 machines hold a Class 4 laser.</small></span>
+      <select id="clsIn"><option value="">Choose</option><option value="none">No, the laser itself is this class</option><option value="3R">Yes, Class 3R</option><option value="3B">Yes, Class 3B</option><option value="4">Yes, Class 4</option><option value="unknown">Don't know</option></select><span class="unit"></span></label>
+    <p class="lhe-hint" id="clsNote"></p>
+    <label class="row"><span class="name">λ, wavelength <small class="lhe-hint">of the laser inside, if it is enclosed</small></span><input id="nm" type="text" inputmode="decimal" autocomplete="off"><span class="unit">nm</span></label>
+    <label class="row"><span class="name">Mode</span>
+      <select id="mode"><option value="cw">Continuous wave (CW)</option><option value="single">Single pulse</option><option value="rep">Repetitive pulse</option></select><span class="unit"></span></label>
+    <label class="row cw-only"><span class="name">Φ, output power</span><input id="power" type="text" inputmode="decimal" autocomplete="off"><span class="unit">W</span></label>
+    <label class="row pulse-only"><span class="name">Q, energy per pulse</span><input id="energy" type="text" inputmode="decimal" autocomplete="off"><span class="unit">J</span></label>
+    <label class="row pulse-only"><span class="name">Pulse duration</span><input id="tp" type="text" inputmode="decimal" autocomplete="off"><span class="unit">s</span></label>
+    <label class="row rep-only"><span class="name">Pulse repetition frequency</span><input id="prf" type="text" inputmode="decimal" autocomplete="off"><span class="unit">Hz</span></label>
+    <label class="row"><span class="name">a, beam diameter at the aperture</span><input id="dia" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mm</span></label>
+    <label class="row"><span class="name">φ, beam divergence (full angle)</span><input id="div" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mrad</span></label>
+    <label class="row"><span class="name">Diameter and divergence are measured at</span>
+      <select id="basis"><option value="1/e">1/e points</option><option value="1/e2">1/e² points (most spec sheets)</option></select><span class="unit"></span></label>
+  </section>
+
+  <section class="lhe-sec">
+    <h2>2. Beam access</h2>
+    <div id="q-access"></div>
+    <div id="closedBlock">
+      <h3>Enclosure</h3>
+      <div id="q-closed"></div>
+    </div>
+  </section>
+
+  <section class="lhe-sec" id="beamBlock">
+    <h2>3. Beam controls and eyewear</h2>
+    <p class="how" id="beamHow">Answer for normal operation and for service and alignment.</p>
+    <div id="q-beam"></div>
+    <div class="eye-only">
+      <label class="row"><span class="name">Eyewear manufacturer and model</span><input id="eyeModel" type="text" autocomplete="off"><span class="unit"></span></label>
+      <label class="row"><span class="name">OD marked on the eyewear at this wavelength</span><input id="eyeOD" type="text" inputmode="decimal" autocomplete="off"><span class="unit">OD</span></label>
+    </div>
+  </section>
+
+  <section class="lhe-sec">
+    <h2>4. Hazard calculations <span class="badge" id="calcBadge"></span></h2>
+    <p class="how" id="calcHow"></p>
+    <label class="row"><span class="name">Viewing</span>
+      <select id="viewing"><option value="intrabeam">Intrabeam (looking into the beam)</option><option value="diffuse">Diffuse (looking at a reflection)</option></select><span class="unit"></span></label>
+    <label class="row"><span class="name">T, exposure duration <small id="tNote" class="lhe-hint"></small></span><input id="T" type="text" inputmode="decimal" autocomplete="off"><span class="unit">s</span></label>
+    <label class="row"><span class="name">D<sub>f</sub>, limiting aperture <small id="dfNote" class="lhe-hint"></small></span><input id="Df" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mm</span></label>
+    <label class="row"><span class="name">MPE <small class="lhe-hint">fills in from the ANSI tables; type your own value to override</small> <small id="mpeNote" class="lhe-hint"></small></span><input id="mpe" type="text" inputmode="decimal" autocomplete="off"><span class="unit" id="mpeUnit">W/cm²</span></label>
+    <h3>Optics and reflections <small class="lhe-hint">optional</small></h3>
+    <label class="row"><span class="name">f₀, focal length of a lens on the laser</span><input id="f0" type="text" inputmode="decimal" autocomplete="off"><span class="unit">cm</span></label>
+    <label class="row"><span class="name">b₀, beam diameter at the lens</span><input id="b0" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mm</span></label>
+    <label class="row"><span class="name">Fiber delivery</span>
+      <select id="fiber"><option value="">None</option><option value="multimode">Multimode fiber</option><option value="singlemode">Single-mode fiber</option></select><span class="unit"></span></label>
+    <label class="row mm-only"><span class="name">NA, numerical aperture of the fiber</span><input id="NA" type="text" inputmode="decimal" autocomplete="off"><span class="unit"></span></label>
+    <label class="row sm-only"><span class="name">ω₀, spot size of the fiber</span><input id="w0" type="text" inputmode="decimal" autocomplete="off"><span class="unit">µm</span></label>
+    <label class="row"><span class="name">ρ<sub>λ</sub>, reflectance of a surface the beam may hit</span><input id="rho" type="text" inputmode="decimal" autocomplete="off"><span class="unit">fraction</span></label>
+    <label class="row"><span class="name">θ, viewing angle from the surface normal</span><input id="theta" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span class="unit">degrees</span></label>
+
+    <div class="lhe-results" aria-live="polite">
+      <h3>Results</h3>
+      <p class="msg" id="msg"></p>
+      <div id="results" hidden>
+        <div class="lhe-eyewear">
+          <p class="lhe-k">Laser safety eyewear</p>
+          <p class="lhe-big" id="eyewearOut"></p>
+          <p class="lhe-sub" id="eyewearSub"></p>
+        </div>
+        <table class="lhe-table"><tbody id="rows"></tbody></table>
+      </div>
+      <div id="diagrams"></div>
+    </div>
+  </section>
+
+  <section class="lhe-sec">
+    <h2>5. Non-beam hazards</h2>
+    <p class="how">Hazards from the laser system other than the beam. Mark each one present or not, and whether it is controlled.</p>
+    <div id="nonbeam"></div>
+    <div id="q-nonbeam"></div>
+  </section>
+
+  <section class="lhe-sec" id="programBlock">
+    <h2>6. Laser safety program</h2>
+    <div id="q-program"></div>
+  </section>
+</form>
+
+<section class="lhe-sec tier-sec" aria-live="polite">
+  <h2>7. Risk and findings</h2>
+  <div class="tier" id="tier"></div>
+  <ol class="findings" id="findings"></ol>
+</section>
+
+<section class="lhe-sec">
+  <h2>8. Report</h2>
+  <label class="row"><span class="name">Prepared by</span><input id="by" type="text" autocomplete="off"><span class="unit"></span></label>
+  <label class="row"><span class="name">Role</span>
+    <select id="role"><option value="">Choose</option><option>Laser Safety Officer</option><option>Laser owner or supervisor</option><option>EHS</option><option>Other</option></select><span class="unit"></span></label>
+  <label class="row"><span class="name">Date</span><input id="date" type="date"><span class="unit"></span></label>
+  <div class="buttons"><button type="button" id="print">Print report / Save as PDF</button><button type="button" id="share" class="secondary">Copy link to this assessment</button></div>
+  <p class="lhe-hint" id="shareNote">The report prints with a signature block for the Laser Safety Officer's review. Nothing you enter leaves your browser. The link carries your answers and numbers, never names, model or location.</p>
+</section>
+
+<p class="src">Sources: ANSI Z136.1-2022 Tables 7a, 7b and 7d (point-source ocular MPE), Section 8.2.3 and Table 8c (multiple pulses); formulas, default exposure times and limiting apertures as given in the University of Nebraska–Lincoln EHS Laser Safety Calculation Guide (7/24).</p>
+<p class="disclaimer">For estimation only. An owner self-assessment, not a professional evaluation by OEMS. The Laser Safety Officer approves the eyewear for each application.</p>
+<p class="copyright">© 2026 Occupational Exposure Management Systems LLC. All rights reserved.</p>
+</main>
+<div id="report" class="report" aria-hidden="true"></div>
+<script type="module" src="app.js"></script>

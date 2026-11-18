@@ -1,0 +1,107 @@
+{
+  "redirects": [
+    {
+      "source": "/assessment",
+      "destination": "/assessment/",
+      "permanent": false
+    },
+    {
+      "source": "/ds_tl",
+      "destination": "/ds_tl/",
+      "permanent": false
+    },
+    {
+      "source": "/laser_beam_diameter",
+      "destination": "/laser_beam_diameter/",
+      "permanent": false
+    },
+    {
+      "source": "/laser_nhz_diffuse",
+      "destination": "/laser_nhz_diffuse/",
+      "permanent": false
+    },
+    {
+      "source": "/laser_nhz_direct_beam",
+      "destination": "/laser_nhz_direct_beam/",
+      "permanent": false
+    },
+    {
+      "source": "/laser_nhz_lens",
+      "destination": "/laser_nhz_lens/",
+      "permanent": false
+    },
+    {
+      "source": "/optical_density",
+      "destination": "/optical_density/",
+      "permanent": false
+    },
+    {
+      "source": "/laser-hazard-evaluation/:path*",
+      "destination": "/assessment/",
+      "permanent": false
+    },
+    {
+      "source": "/laser_hazard_evaluation/:path*",
+      "destination": "/assessment/",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/assessment/",
+      "destination": "/assessment/index.html"
+    },
+    {
+      "source": "/ds_tl/",
+      "destination": "/ds-tl/index.html"
+    },
+    {
+      "source": "/laser_beam_diameter/",
+      "destination": "/laser-beam-diameter/index.html"
+    },
+    {
+      "source": "/laser_nhz_diffuse/",
+      "destination": "/laser-nhz-diffuse/index.html"
+    },
+    {
+      "source": "/laser_nhz_direct_beam/",
+      "destination": "/laser-nhz-direct-beam/index.html"
+    },
+    {
+      "source": "/laser_nhz_lens/",
+      "destination": "/laser-nhz-lens/index.html"
+    },
+    {
+      "source": "/optical_density/",
+      "destination": "/optical-density/index.html"
+    },
+    {
+      "source": "/assessment/:path+",
+      "destination": "/assessment/:path+"
+    },
+    {
+      "source": "/ds_tl/:path+",
+      "destination": "/ds-tl/:path+"
+    },
+    {
+      "source": "/laser_beam_diameter/:path+",
+      "destination": "/laser-beam-diameter/:path+"
+    },
+    {
+      "source": "/laser_nhz_diffuse/:path+",
+      "destination": "/laser-nhz-diffuse/:path+"
+    },
+    {
+      "source": "/laser_nhz_direct_beam/:path+",
+      "destination": "/laser-nhz-direct-beam/:path+"
+    },
+    {
+      "source": "/laser_nhz_lens/:path+",
+      "destination": "/laser-nhz-lens/:path+"
+    },
+    {
+      "source": "/optical_density/:path+",
+      "destination": "/optical-density/:path+"
+    }
+  ]
+}

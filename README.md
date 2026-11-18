@@ -1,0 +1,20 @@
+# oems_laser_safety
+OEMS Laser Safety: the Laser Safety Assessment and the laser calculators.
+
+## Pages
+- `assessment/`: the Laser Safety Assessment. One laser at a time: laser details, beam access (open or enclosed, service and alignment), beam controls and eyewear, the beam calculations (automatic ANSI Z136.1 MPE, eyewear OD, NOHD and hazard zones, with diagrams), non-beam hazards, program items, a High / Medium / Low risk tier, and a printable report with a calculation appendix.
+  - `questions.js`: the questions, the gates (which questions and calculations apply), findings and the risk tier.
+  - `calc.js`, `mpe.js`: the beam math and the ANSI MPE tables (moved from oems_radiation's Laser Hazard Evaluation).
+  - `app.js`: the page and the report.
+- Six laser calculators (NHZ direct beam, lens, diffuse, Ds, beam diameter, eyewear OD), defined in `calculators.js` and drawn by `diagram.js`.
+
+## Changing things
+```
+node scripts/build-pages.mjs      # rebuilds the pages and vercel.json
+node tests/check.mjs              # calculators against the Google Sheet values
+node tests/mpe-check.mjs          # MPE tables
+node tests/assessment-check.mjs   # gates and risk tiers
+```
+
+## Hosting
+Static site, no build step. On Vercel, import this repo with the default settings. The old radiation-site address /laser-hazard-evaluation redirects to /assessment/.

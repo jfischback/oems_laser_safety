@@ -1,0 +1,114 @@
+{
+ "inverse-square-law": {
+  "tab": "RAD Inverse Square",
+  "primaryValue": 11.11111111
+ },
+ "half-value-layer": {
+  "tab": "RAD Half-Value Layer",
+  "primaryValue": 6.25
+ },
+ "radioactive-decay": {
+  "tab": "RAD Radioactive Decay",
+  "primaryValue": 6.491206707
+ },
+ "dose-summation-tede": {
+  "tab": "RAD Dose Summation TEDE",
+  "primaryValue": 0.7
+ },
+ "dac-from-ali": {
+  "tab": "RAD DAC and ALI",
+  "primaryValue": 1.25e-08
+ },
+ "number-of-hvls": {
+  "tab": "RAD Number of HVLs",
+  "primaryValue": 12.5
+ },
+ "number-of-tvls": {
+  "tab": "RAD Number of TVLs",
+  "primaryValue": 1
+ },
+ "tenth-value-layer": {
+  "tab": "RAD Tenth-Value Layer",
+  "primaryValue": 1
+ },
+ "shield-thickness-hvl": {
+  "tab": "RAD Shield Thickness HVL",
+  "primaryValue": 2
+ },
+ "buildup-factor": {
+  "tab": "RAD Buildup Factor",
+  "primaryValue": 73.57588823
+ },
+ "activity-from-atoms": {
+  "tab": "RAD Activity from Atoms",
+  "primaryValue": 1000103907
+ },
+ "effective-half-life": {
+  "tab": "RAD Effective Half-Life",
+  "primaryValue": 7.289252443
+ },
+ "dose-equivalent": {
+  "tab": "RAD Dose Equivalent",
+  "primaryValue": 200
+ },
+ "gamma-dose-rate": {
+  "tab": "RAD Gamma Dose Rate",
+  "primaryValue": 0.0825
+ },
+ "power-density-from-e": {
+  "tab": "RAD Power Density from E",
+  "primaryValue": 2.652519894
+ },
+ "power-density-from-h": {
+  "tab": "RAD Power Density from H",
+  "primaryValue": 9.425
+ },
+ "antenna-max-power-density": {
+  "tab": "RAD Antenna Max Power Density",
+  "primaryValue": 400
+ },
+ "rf-distance-to-el": {
+  "tab": "RAD RF Distance to EL",
+  "primaryValue": 398.9422804
+ },
+ "antenna-gain": {
+  "tab": "RAD Antenna Gain",
+  "primaryValue": 19.95262315
+ },
+ "rf-spatial-average": {
+  "tab": "RAD RF Spatial Average",
+  "primaryValue": 15.13274595
+ },
+ "rf-exposure-time": {
+  "tab": "RAD RF Exposure Time",
+  "primaryValue": 0.025
+ },
+ "laser-nhz-direct-beam": {
+  "tab": "RAD Laser NHZ Direct Beam",
+  "primaryValue": 22566.6971
+ },
+ "laser-nhz-lens": {
+  "tab": "RAD Laser NHZ Lens",
+  "primaryValue": 1128.379167
+ },
+ "laser-nhz-diffuse": {
+  "tab": "RAD Laser NHZ Diffuse",
+  "primaryValue": 9.96188743
+ },
+ "ds-tl": {
+  "tab": "RAD Ds TL",
+  "primaryValue": 22566.6971
+ },
+ "laser-beam-diameter": {
+  "tab": "RAD Laser Beam Diameter",
+  "primaryValue": 10.0019998
+ },
+ "optical-density": {
+  "tab": "RAD Optical Density",
+  "primaryValue": 3.602059991
+ },
+ "uv-exposure-time": {
+  "tab": "RAD UV Exposure Time",
+  "primaryValue": 30
+ }
+}
