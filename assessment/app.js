@@ -218,8 +218,22 @@ function update() {
   $("findings").innerHTML = (t.findings || []).map(f => `<li><strong>${esc(f.text)}</strong><br>${esc(f.rec)}</li>`).join("");
   const out = { a, c, t, req, reqCalcMissing };
   drawPaperwork(out);
+  drawJump();
   return out;
 }
+
+// ---------- Jump links to the sections that apply ----------
+function drawJump() {
+  const heads = [...document.querySelectorAll("main.lhe section > h2")].filter(h => !h.parentElement.hidden);
+  heads.forEach((h, i) => { h.id = h.id || `sec-${i}`; });
+  const html = heads.map(h => `<a href="#${h.id}">${esc(h.textContent.replace(/\s*(Required|Optional)\s*$/, ""))}</a>`).join("");
+  if ($("jump").dataset.html !== html) { $("jump").innerHTML = html; $("jump").dataset.html = html; }
+}
+$("jump").addEventListener("click", e => {
+  const a = e.target.closest("a"); if (!a) return;
+  e.preventDefault(); // the address hash is used by the shareable link, so scroll without changing it
+  document.getElementById(a.getAttribute("href").slice(1)).scrollIntoView({ behavior: "smooth" });
+});
 
 // ---------- Program paperwork (paperwork.js): inventory row, eyewear line, SOP draft ----------
 function paperData({ a, c, t, req }) {
@@ -426,6 +440,30 @@ $("share").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(url); $("shareNote").textContent = "Link copied. It reopens this assessment with your answers and numbers (no names, model, serial, location or notes)."; }
   catch (e) { history.replaceState(null, "", url); $("shareNote").textContent = "Copy the address in your browser's address bar; it now holds this assessment."; }
 });
+// ---------- Draft: the answers are kept in this browser tab (sessionStorage) so a reload does not lose them ----------
+const DRAFT = "oems_laser_draft_v1";
+const fields = () => [...document.querySelectorAll("main.lhe input[id], main.lhe select[id], main.lhe textarea[id]")];
+function saveDraft() {
+  const v = {};
+  for (const el of fields()) v[el.id] = el.type === "checkbox" ? el.checked : el.value;
+  try { sessionStorage.setItem(DRAFT, JSON.stringify({ v, touched })); } catch (e) {}
+}
+function loadDraft() {
+  let d = null;
+  try { d = JSON.parse(sessionStorage.getItem(DRAFT) || "null"); } catch (e) {}
+  if (!d || !d.v) return;
+  for (const el of fields()) if (el.id in d.v) { if (el.type === "checkbox") el.checked = !!d.v[el.id]; else el.value = d.v[el.id]; }
+  Object.assign(touched, d.touched || {});
+}
+document.addEventListener("input", e => { if (e.target.closest("main.lhe")) saveDraft(); });
+document.addEventListener("change", e => { if (e.target.closest("main.lhe")) saveDraft(); });
+$("startOver").addEventListener("click", () => {
+  if (!confirm("Clear every answer on this page and start a new assessment?")) return;
+  try { sessionStorage.removeItem(DRAFT); } catch (e) {}
+  history.replaceState(null, "", location.pathname);
+  location.reload();
+});
+if (location.hash.length <= 1) loadDraft();
 if (location.hash.length > 1) {
   const p = new URLSearchParams(location.hash.slice(1));
   for (const [id, v] of p) if (SHARE_IDS.includes(id) && $(id)) { $(id).value = v; if (id in touched) touched[id] = true; }

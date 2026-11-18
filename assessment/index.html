@@ -49,6 +49,8 @@
 <h1>Laser Safety Assessment</h1>
 <p class="how">Answer the questions for one laser. The page works out which calculations are required, calculates the eyewear OD and hazard zones, ranks the risk High, Medium or Low, and prints the report. Results update as you type.</p>
 
+<nav class="lhe-jump" id="jump" aria-label="Sections"></nav>
+
 <div class="lhe-notice">
   <strong>Self-assessment.</strong> This is an owner self-assessment based on the answers you enter. It is not a professional evaluation by OEMS. Use the class printed on the laser's label and the specifications in the manufacturer's manual.
 </div>
@@ -73,9 +75,9 @@
     <label class="row pulse-only"><span class="name">Q, energy per pulse</span><input id="energy" type="text" inputmode="decimal" autocomplete="off"><span class="unit">J</span></label>
     <label class="row pulse-only"><span class="name">Pulse duration</span><input id="tp" type="text" inputmode="decimal" autocomplete="off"><span class="unit">s</span></label>
     <label class="row rep-only"><span class="name">Pulse repetition frequency</span><input id="prf" type="text" inputmode="decimal" autocomplete="off"><span class="unit">Hz</span></label>
-    <label class="row"><span class="name">a, beam diameter at the aperture</span><input id="dia" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mm</span></label>
-    <label class="row"><span class="name">φ, beam divergence (full angle)</span><input id="div" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mrad</span></label>
-    <label class="row"><span class="name">Diameter and divergence are measured at</span>
+    <label class="row"><span class="name">a, beam diameter at the aperture <small class="lhe-hint">On the datasheet or in the manual, listed as beam diameter at the output or exit aperture.</small></span><input id="dia" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mm</span></label>
+    <label class="row"><span class="name">φ, beam divergence (full angle) <small class="lhe-hint">On the datasheet or in the manual. If it gives a half angle, double it.</small></span><input id="div" type="text" inputmode="decimal" autocomplete="off"><span class="unit">mrad</span></label>
+    <label class="row"><span class="name">Diameter and divergence are measured at <small class="lhe-hint">The datasheet says which. The calculations convert 1/e² values to the 1/e values ANSI uses.</small></span>
       <select id="basis"><option value="1/e">1/e points</option><option value="1/e2">1/e² points (most spec sheets)</option></select><span class="unit"></span></label>
   </section>
 
@@ -157,7 +159,8 @@
     <select id="role"><option value="">Choose</option><option>Laser Safety Officer</option><option>Laser owner or supervisor</option><option>EHS</option><option>Other</option></select><span class="unit"></span></label>
   <label class="row"><span class="name">Date</span><input id="date" type="date"><span class="unit"></span></label>
   <div class="buttons"><button type="button" id="print">Print report / Save as PDF</button><button type="button" id="regAdd" class="secondary">Add to register</button><button type="button" id="share" class="secondary">Copy link to this assessment</button></div>
-  <p class="lhe-hint"><span id="regMsg" aria-live="polite"></span> <a href="../register/">Open the laser risk register</a></p>
+  <p class="lhe-hint"><span id="regMsg" aria-live="polite"></span> <a href="../register/" target="_blank" rel="noopener">Open the laser risk register</a> (opens in a new tab, so your answers stay here)</p>
+  <p class="lhe-hint">Your answers are kept in this browser tab while you work, so a reload does not lose them. They are cleared when you close the tab. <button type="button" id="startOver" class="linklike">Start a new assessment</button></p>
   <p class="lhe-hint" id="shareNote">The report prints with a signature block for the Laser Safety Officer's review. Nothing you enter leaves your browser. The link carries your answers and numbers, never names, model or location.</p>
 </section>
 
