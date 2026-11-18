@@ -136,3 +136,52 @@ export function sopDraft(d) {
 // Which assessment questions are listed under each line of Appendix C, Section 2 (by the program section each falls under).
 const ENG = ["intlk", "intlkTest", "windows", "path", "walkway", "stops", "key"];
 const AREA = ["area", "signs", "people"];
+
+// ---------- Laser-Controlled Area entrance sign (Program Section 6.11.2) ----------
+// Which sign this laser needs. The signal word follows ANSI Z136.1 as shown in the ANSI 2022 sign formats:
+//   WARNING: Class 3B and Class 4 laser controlled areas.
+//   DANGER:  Class 4 with multi-kilowatt output power or high pulse energy and an exposed beam. The Laser
+//            Safety Officer makes that call, so it is a switch (opts.danger), never worked out here.
+//   NOTICE:  a temporary controlled area while an enclosed Class 3B or 4 laser is open for service.
+// Returns { kind: "none", why } when the program does not call for a posted area.
+export function signKind(d, opts = {}) {
+  const a = d.a;
+  if (!hi(d)) return { kind: "none", why: "No area sign: the program requires a posted Laser-Controlled Area only for Class 3B and Class 4 lasers (Section 6.6.1)." };
+  if (a.open === "yes") return { kind: d.e === "4" && opts.danger ? "DANGER" : "WARNING", canDanger: d.e === "4" };
+  if (a.service === "yes") return { kind: "NOTICE" };
+  if (!a.open || !a.service) return { kind: "none", why: "Answer the two beam access questions in section 2 to see the sign." };
+  return { kind: "none", why: "No area sign: the beam cannot be reached in normal operation or during service, so no Laser-Controlled Area is set up." };
+}
+
+const HEAD = { DANGER: ["#C8102E", "#fff", 823], WARNING: ["#FF8200", "#000", 927], NOTICE: ["#0055A4", "#fff", 718] };
+// The sign as an SVG, 14 by 10 (landscape). Lines the assessment cannot fill are left as blanks to write on.
+export function signSvg(d, opts = {}) {
+  const k = signKind(d, opts);
+  if (k.kind === "none") return "";
+  const [fill, ink, wordW] = HEAD[k.kind], alert = k.kind !== "NOTICE";
+  const total = wordW + (alert ? 200 : 0), x0 = (1400 - total) / 2, wordX = x0 + (alert ? 200 : 0);
+  const tri = alert ? `<g transform="translate(${x0},48)"><path d="M85 6 L166 150 H4 Z" fill="${k.kind === "DANGER" ? "#fff" : "#000"}" stroke="${k.kind === "DANGER" ? "#fff" : "#000"}" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M85 30 L148 142 H22 Z" fill="${k.kind === "DANGER" ? "#C8102E" : "#FF8200"}"/><rect x="77" y="62" width="16" height="48" rx="7" fill="${k.kind === "DANGER" ? "#fff" : "#000"}"/><circle cx="85" cy="126" r="9" fill="${k.kind === "DANGER" ? "#fff" : "#000"}"/></g>` : "";
+  const rays = Array.from({ length: 16 }, (_, i) => {
+    const t = (i * Math.PI) / 8, len = i === 0 ? 118 : i === 8 ? 96 : i % 2 ? 58 : 80;
+    return `<line x1="${(22 * Math.cos(t)).toFixed(1)}" y1="${(22 * Math.sin(t)).toFixed(1)}" x2="${(len * Math.cos(t)).toFixed(1)}" y2="${(len * Math.sin(t)).toFixed(1)}"/>`;
+  }).join("");
+  const od = d.calcDone && d.need > 0 ? `OD ${d.need} @ ${esc(d.nm)} nm` : "OD __________ @ __________ nm";
+  const power = d.power && d.power[1] ? `${esc(d.power[0])}: ${esc(d.power[1])}` : "Average power: ______________";
+  const area = `Class ${esc(d.e)} Laser Controlled Area`;
+  const T = (y, size, text, weight = 700) => `<text x="520" y="${y}" font-size="${size}" font-weight="${weight}">${text}</text>`;
+  const body = k.kind === "NOTICE"
+    ? T(350, 60, "Laser service in progress") + T(420, 42, `Temporary ${area}`) + T(490, 42, "Authorized personnel only")
+    : T(370, 58, area);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" role="img" aria-label="${k.kind} sign: ${area}" font-family="Arial, Helvetica, sans-serif">
+  <rect x="10" y="10" width="1380" height="980" fill="#fff" stroke="#000" stroke-width="12"/>
+  <rect x="16" y="16" width="1368" height="226" fill="${fill}"/><line x1="10" y1="246" x2="1390" y2="246" stroke="#000" stroke-width="10"/>
+  ${tri}<text x="${wordX}" y="202" font-size="190" font-weight="700" ${k.kind === "NOTICE" ? 'font-style="italic" ' : ""}fill="${ink}" textLength="${wordW}" lengthAdjust="spacingAndGlyphs">${k.kind}</text>
+  <line x1="480" y1="246" x2="480" y2="990" stroke="#000" stroke-width="8"/>
+  <path d="M245 360 L455 760 H35 Z" fill="#FFD100" stroke="#000" stroke-width="22" stroke-linejoin="round"/>
+  <g transform="translate(245,640)" stroke="#000" stroke-width="9" stroke-linecap="butt">${rays}<circle r="26" fill="#000" stroke="none"/></g>
+  <g fill="#000">${body}
+  ${T(600, 46, "Laser eye protection required:")}${T(665, 46, od)}
+  ${T(770, 46, "Laser type: __________________")}${T(850, 46, power)}
+  <text x="520" y="950" font-size="28" textLength="840" lengthAdjust="spacingAndGlyphs">Laser Safety Officer __________________ Phone ____________</text></g></svg>`;
+}

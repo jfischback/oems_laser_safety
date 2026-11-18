@@ -1,6 +1,6 @@
 // Run with: node tests/paperwork-check.mjs
 // Checks the inventory row, the eyewear line and the SOP draft built from an assessment.
-import { inventoryRow, eyewearRow, sopDraft, tsv } from "../assessment/paperwork.js";
+import { inventoryRow, eyewearRow, sopDraft, tsv, signKind, signSvg } from "../assessment/paperwork.js";
 import { NONBEAM } from "../assessment/questions.js";
 let fails = 0;
 const ok = (name, cond, got) => { if (!cond) fails++; console.log(`${cond ? "PASS" : "FAIL"} ${name}${cond ? "" : ` → ${JSON.stringify(got)}`}`); };
@@ -42,5 +42,20 @@ ok("SOP draft carries the NOHD", html.includes("942.9 m"));
 ok("SOP draft carries the required OD", html.includes("OD 5 or higher at 1064 nm"));
 ok("SOP draft lists the interlock answer", html.includes("interlocked") && html.includes("<strong>Yes</strong>"));
 ok("SOP draft escapes what was typed", !sopDraft(base({ name: "<b>x" })).includes("<b>x"));
+
+// Entrance sign
+const open4 = base({ cls: "4", e: "4", power: ["Average power", "50 W"] }, { cls: "4", clsIn: "", open: "yes" });
+ok("open Class 4 → WARNING", signKind(open4).kind === "WARNING" && signKind(open4).canDanger === true, signKind(open4));
+ok("open Class 4, LSO switch → DANGER", signKind(open4, { danger: true }).kind === "DANGER");
+const open3b = base({ cls: "3B", e: "3B" }, { cls: "3B", clsIn: "", open: "yes" });
+ok("open Class 3B → WARNING, no DANGER switch", signKind(open3b, { danger: true }).kind === "WARNING" && !signKind(open3b).canDanger);
+ok("enclosed, opened for service → NOTICE", signKind(base()).kind === "NOTICE");
+ok("enclosed, never opened → no sign", signKind(base({}, { service: "no" })).kind === "none");
+ok("Class 3R → no sign", signKind(base({ cls: "3R", e: "3R" }, { cls: "3R", open: "yes" })).kind === "none");
+let svg = signSvg(open4);
+ok("sign carries class, OD and power", svg.includes("Class 4 Laser Controlled Area") && svg.includes("OD 5 @ 1064 nm") && svg.includes("Average power: 50 W"), svg.slice(0, 80));
+ok("no calculation → OD left blank to write in", signSvg({ ...open4, calcDone: false }).includes("OD __________ @"));
+ok("NOTICE sign says temporary", signSvg(base()).includes("Temporary Class 4 Laser Controlled Area"));
+ok("no sign → nothing drawn", signSvg(base({}, { service: "no" })) === "");
 console.log(fails ? `${fails} FAILED` : "ALL PASS");
 process.exit(fails ? 1 : 0);

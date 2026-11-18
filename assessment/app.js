@@ -3,7 +3,7 @@ import { mpe as tableMPE, multiPulseMPE, skinMPE } from "./mpe.js";
 import { QUESTIONS, NONBEAM, LOTO, effectiveClass, calcRequired, beamControlsApply, closedApplies, riskTier } from "./questions.js";
 import { DIAGRAMS } from "../diagram.js";
 import { addRow } from "../register/store.js";
-import { inventoryRow, eyewearRow, sopDraft, tsv } from "./paperwork.js";
+import { inventoryRow, eyewearRow, sopDraft, tsv, signKind, signSvg } from "./paperwork.js";
 
 const $ = id => document.getElementById(id);
 const num = id => {
@@ -231,6 +231,9 @@ function paperData({ a, c, t, req }) {
     date: v("date"), by: v("by"), a, req, tier: t.tier,
     calcDone: !!(c.ok && c.r.od !== undefined && c.r.nohd !== undefined), need: c.ok ? c.requiredOD : 0,
     eyeModel: v("eyeModel"), eyeOD: a.eyeOD,
+    power: mode === "cw" ? ["Average power", v("power") ? `${v("power")} W` : ""]
+      : mode === "rep" ? ["Average power", num("energy") > 0 && num("prf") > 0 ? `${fmt(num("energy") * num("prf"))} W` : ""]
+      : ["Energy per pulse", v("energy") ? `${v("energy")} J` : ""],
     hazardRows: c.ok ? c.rows.filter(([k, val]) => /NOHD|NHZ|hazard distance/.test(k) && !/^enter /.test(val)) : [],
     nonbeam: NONBEAM.map(h => ({ name: h.name, status: status(h), notes: v(`nbn_${h.id}`) })),
     controls: ALL_Q.filter(x => x.show(a) && a[x.id]).map(x => [x.text, { yes: "Yes", no: "No", na: "N/A" }[a[x.id]], x.id]),
@@ -242,7 +245,16 @@ function drawPaperwork(state) {
   const table = row => row.map(([k, val]) => `<tr><th>${esc(k)}</th><td>${val ? esc(val) : '<span class="pw-blank">blank</span>'}</td></tr>`).join("");
   $("pwInv").innerHTML = table(inventoryRow(paper));
   $("pwEye").innerHTML = table(eyewearRow(paper));
+  const k = signKind(paper, signOpts());
+  $("pwDangerRow").hidden = !k.canDanger;
+  $("pwSignWhy").textContent = k.kind === "none" ? k.why
+    : k.kind === "NOTICE" ? "This laser is enclosed in normal operation and opened for service, so it gets a NOTICE sign for the temporary Laser-Controlled Area. Post it at each entrance while the housing is open."
+    : `Post at every entrance to the Laser-Controlled Area. ${paper.calcDone ? "" : "Finish the calculations in section 4 to fill in the eyewear OD. "}Write in the laser type and the Laser Safety Officer's name and phone.`;
+  $("pwSign").innerHTML = signSvg(paper, signOpts());
+  $("pwSignPrint").disabled = k.kind === "none";
 }
+function signOpts() { return { danger: $("pwDanger").checked }; }
+$("pwDanger").addEventListener("change", () => update());
 async function copyRow(row, msgId, done) {
   try { await navigator.clipboard.writeText(tsv(row)); $(msgId).textContent = done; }
   catch (e) { $(msgId).textContent = "Could not copy: this browser is not allowing the clipboard. Type the values from the table above."; }
@@ -360,11 +372,19 @@ function buildReport() {
 
 // Printing shows the assessment report, or the SOP draft when its button was used.
 let printing = "report";
-const buildPrint = () => { if (printing === "sop") { update(); $("report").innerHTML = sopDraft(paper); } else buildReport(); };
+const landscape = document.createElement("style"); // the sign prints on a landscape page
+const buildPrint = () => {
+  landscape.textContent = printing === "sign" ? "@page { size: letter landscape; margin: 0.4in; }" : "";
+  if (!landscape.isConnected) document.head.append(landscape);
+  if (printing === "sop") { update(); $("report").innerHTML = sopDraft(paper); }
+  else if (printing === "sign") { update(); $("report").innerHTML = `<div class="sign-page">${signSvg(paper, signOpts())}</div>`; }
+  else buildReport();
+};
+$("pwSignPrint").addEventListener("click", () => { printing = "sign"; buildPrint(); window.print(); });
 $("print").addEventListener("click", () => { printing = "report"; buildPrint(); window.print(); });
 $("pwSop").addEventListener("click", () => { printing = "sop"; buildPrint(); window.print(); });
 window.addEventListener("beforeprint", buildPrint);
-window.addEventListener("afterprint", () => { printing = "report"; });
+window.addEventListener("afterprint", () => { printing = "report"; landscape.textContent = ""; });
 
 
 // ---------- Risk register: add this laser as one row (kept in this browser; register/store.js) ----------

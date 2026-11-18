@@ -303,3 +303,8 @@ body[data-tool="register"] main { max-width: 1400px; }
   .report h2, .report h3 { break-after: avoid; }
   .report .tall { break-inside: avoid; }
 }
+.pw-sign svg { display: block; width: 100%; max-width: 560px; height: auto; margin: 8px 0; }
+.pw-check { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0; font-size: .9rem; }
+.pw-check[hidden] { display: none; }
+.pw-check input { flex: none; width: auto; margin-top: 3px; }
+@media print { .sign-page svg { display: block; width: 100%; height: auto; max-height: 7.6in; } }
