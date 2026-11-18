@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validation Record | OEMS Laser Safety</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../disclaimer.css">
+<script>try { if (localStorage.getItem("oems_disclaimer_v1")) document.documentElement.classList.add("oems-agreed"); } catch (e) {}</script>
+</head>
+<body data-tool="validation">
+  <div class="oems-gate" id="oemsGate">
+    <div class="oems-gate-bar">
+      <div class="oems-gate-brand">
+        <span class="oems-gate-name">OEMS</span>
+        <span class="oems-gate-full">Occupational Exposure Management Systems LLC</span>
+      </div>
+    </div>
+    <div class="oems-gate-card" role="dialog" aria-modal="true" aria-labelledby="oemsGateTitle" tabindex="-1">
+      <h2 id="oemsGateTitle">Before you use this tool</h2>
+      <p>This calculator is provided by OEMS (Occupational Exposure Management Systems) for general informational and educational purposes only. It is not professional industrial hygiene, medical, engineering, or legal advice, and it does not replace an evaluation by a qualified professional.</p>
+      <p>Results depend entirely on the information you enter and on the assumptions built into the tool. They may be incomplete, inaccurate, or not applicable to your workplace. You are responsible for verifying all results against applicable regulations (including OSHA standards), manufacturer data, and your organization’s requirements before relying on them.</p>
+      <p>Do not use this tool as the sole basis for decisions that affect worker health or safety, including laser eyewear selection, hazard zones, or demonstrating compliance with ANSI Z136.1.</p>
+      <p>OEMS makes no warranties, express or implied, about the accuracy, completeness, or fitness for a particular purpose of this tool or its results. To the fullest extent permitted by law, OEMS is not liable for any loss, injury, or damage arising from use of, or reliance on, this tool.</p>
+      <label class="oems-gate-check"><input type="checkbox" id="oemsGateCheck"> <span>I have read and understand this disclaimer, and I agree to use this tool at my own risk.</span></label>
+      <button type="button" class="oems-gate-btn" id="oemsGateBtn" disabled>I agree — continue</button>
+    </div>
+  </div>
+  <script src="../disclaimer.js"></script>
+
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <span class="brand-name">OEMS</span>
+        <span class="brand-full">Occupational Exposure Management Systems LLC</span>
+      </div>
+      <div class="oems-right">
+        <div class="tag">Exposure assessment tools for Health &amp; Safety Professionals</div>
+        <a class="alltools" href="https://oemstoolsearch.vercel.app/">← All OEMS tools</a>
+      </div>
+    </div>
+  </header>
+
+<main>
+<a class="back" href="../">All laser safety tools</a>
+<h1>Validation record</h1>
+<p class="rlead">The calculations in the Laser Safety Assessment, run against values published by independent sources. This page runs the tool's own calculation code each time it opens, so it always shows what the current version produces.</p>
+<div class="val-sum" id="valSum"></div>
+<h2>What was checked</h2>
+<ul class="val-list">
+  <li><strong>Hazard distances</strong> (direct beam, lens on laser, diffuse reflection): the 18 values in the OSHA Technical Manual's nominal hazard zone table, using the MPE values OSHA used.</li>
+  <li><strong>Maximum permissible exposure</strong>, as the tool looks it up from ANSI Z136.1-2022: against the OSHA Technical Manual's MPE table and the University of Nebraska-Lincoln calculation guide.</li>
+  <li><strong>Eyewear optical density</strong>, from the looked-up MPE through to the OD: against the OSHA Technical Manual's eyewear table and worked example, and the Nebraska guide.</li>
+</ul>
+<p class="rnote2">A case agrees when the tool is within 2% of the published value (3% for the diffuse distances and the MPE values, which are published to two digits), or, for optical density, within 0.05 before rounding up.</p>
+<div class="rscroll" id="valTable"></div>
+<h2>What is not covered by this record</h2>
+<ul class="val-list">
+  <li>Automatic MPE from 700 to 1400 nm and for visible light over 10 seconds. The tool does not calculate these yet and asks for the MPE to be entered. The hazard distance formulas were checked at 1064 nm with the MPE OSHA gives.</li>
+  <li>Fiber and mirror-like (specular) reflection distances, and skin MPE: no independent published values were found to check them against.</li>
+  <li>Repetitive pulses: one published example was checked.</li>
+</ul>
+<h2>Sources</h2>
+<ul class="val-list">
+  <li>OSHA Technical Manual, Section III, Chapter 6, Laser Hazards: Tables III:6-6, III:6-7 and III:6-8 and Equation III:6-1.</li>
+  <li>University of Nebraska-Lincoln Environmental Health and Safety, Laser Safety Calculation Guide (7/24).</li>
+</ul>
+<table class="pw val-sign"><tbody>
+  <tr><th>Tool version</th><td id="valVer"></td></tr>
+  <tr><th>Record produced</th><td id="valDate"></td></tr>
+  <tr><th>Reviewed by / date</th><td></td></tr>
+  <tr><th>Signature</th><td></td></tr>
+</tbody></table>
+<div class="rbar"><button type="button" class="rbtn pri" id="valPrint">Print / Save as PDF</button></div>
+<p class="copyright">© 2026 Occupational Exposure Management Systems LLC. All rights reserved.</p>
+</main>
+<script type="module" src="app.js"></script>
+
+</body>
+</html>

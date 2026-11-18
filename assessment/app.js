@@ -3,6 +3,7 @@ import { mpe as tableMPE, multiPulseMPE, skinMPE } from "./mpe.js";
 import { QUESTIONS, NONBEAM, LOTO, effectiveClass, calcRequired, beamControlsApply, closedApplies, riskTier } from "./questions.js";
 import { DIAGRAMS } from "../diagram.js";
 import { addRow } from "../register/store.js";
+import { TOOL_VERSION } from "./version.js";
 import { inventoryRow, eyewearRow, sopDraft, tsv, signKind, signSvg } from "./paperwork.js";
 
 const $ = id => document.getElementById(id);
@@ -281,7 +282,6 @@ document.addEventListener("change", e => { if (e.target.closest("#lhe")) update(
 try { const d = new Date(); $("date").value = new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); } catch (e) {}
 
 // ---------- Report ----------
-const TOOL_VERSION = "1.1 (2026-11-18)";
 const CAT = { laser: "The laser", environment: "The environment", personnel: "The people" };
 const CTRL = { engineering: "Engineering control", administrative: "Administrative control", ppe: "PPE" };
 const val = id => esc($(id).value.trim()) || "—";

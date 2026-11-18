@@ -8,6 +8,8 @@ OEMS Laser Safety: the Laser Safety Assessment and the laser calculators.
   - `app.js`: the page and the report.
 - `register/`: the laser risk register, built the same way as the chemical tool's register (non_man_exposure_assessment). One row per laser, added from the assessment with "Add to register"; kept in the browser only, with Excel download and load, follow-up columns, and the original and signed report files.
 - `assessment/paperwork.js`: program paperwork from one assessment, shown in section 9 of the assessment page: the laser's row for the Appendix A inventory sheet (copy and paste across), its line for the Appendix H eyewear log, a printable draft of the Appendix C operating procedure, and the entrance sign (WARNING for Class 3B and 4 areas, DANGER only by the Laser Safety Officer's switch, NOTICE for a temporary area during service). Cells the assessment does not ask about are left blank for the Laser Safety Officer. Tests: `node tests/paperwork-check.mjs`.
+- `validation/`: the validation record. `cases.js` runs the tool's own calculation code against values published in the OSHA Technical Manual (Section III, Chapter 6) and the UNL calculation guide; the page shows the result live and prints with a reviewer line. Test: `node tests/validation-check.mjs`.
+- `assessment/version.js`: the tool version printed on the report and the validation record. Raise it when the calculations or the report change.
 - Six laser calculators (NHZ direct beam, lens, diffuse, Ds, beam diameter, eyewear OD), defined in `calculators.js` and drawn by `diagram.js`.
 
 ## Changing things

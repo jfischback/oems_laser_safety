@@ -1,0 +1,34 @@
+<main>
+<a class="back" href="../">All laser safety tools</a>
+<h1>Validation record</h1>
+<p class="rlead">The calculations in the Laser Safety Assessment, run against values published by independent sources. This page runs the tool's own calculation code each time it opens, so it always shows what the current version produces.</p>
+<div class="val-sum" id="valSum"></div>
+<h2>What was checked</h2>
+<ul class="val-list">
+  <li><strong>Hazard distances</strong> (direct beam, lens on laser, diffuse reflection): the 18 values in the OSHA Technical Manual's nominal hazard zone table, using the MPE values OSHA used.</li>
+  <li><strong>Maximum permissible exposure</strong>, as the tool looks it up from ANSI Z136.1-2022: against the OSHA Technical Manual's MPE table and the University of Nebraska-Lincoln calculation guide.</li>
+  <li><strong>Eyewear optical density</strong>, from the looked-up MPE through to the OD: against the OSHA Technical Manual's eyewear table and worked example, and the Nebraska guide.</li>
+</ul>
+<p class="rnote2">A case agrees when the tool is within 2% of the published value (3% for the diffuse distances and the MPE values, which are published to two digits), or, for optical density, within 0.05 before rounding up.</p>
+<div class="rscroll" id="valTable"></div>
+<h2>What is not covered by this record</h2>
+<ul class="val-list">
+  <li>Automatic MPE from 700 to 1400 nm and for visible light over 10 seconds. The tool does not calculate these yet and asks for the MPE to be entered. The hazard distance formulas were checked at 1064 nm with the MPE OSHA gives.</li>
+  <li>Fiber and mirror-like (specular) reflection distances, and skin MPE: no independent published values were found to check them against.</li>
+  <li>Repetitive pulses: one published example was checked.</li>
+</ul>
+<h2>Sources</h2>
+<ul class="val-list">
+  <li>OSHA Technical Manual, Section III, Chapter 6, Laser Hazards: Tables III:6-6, III:6-7 and III:6-8 and Equation III:6-1.</li>
+  <li>University of Nebraska-Lincoln Environmental Health and Safety, Laser Safety Calculation Guide (7/24).</li>
+</ul>
+<table class="pw val-sign"><tbody>
+  <tr><th>Tool version</th><td id="valVer"></td></tr>
+  <tr><th>Record produced</th><td id="valDate"></td></tr>
+  <tr><th>Reviewed by / date</th><td></td></tr>
+  <tr><th>Signature</th><td></td></tr>
+</tbody></table>
+<div class="rbar"><button type="button" class="rbtn pri" id="valPrint">Print / Save as PDF</button></div>
+<p class="copyright">© 2026 Occupational Exposure Management Systems LLC. All rights reserved.</p>
+</main>
+<script type="module" src="app.js"></script>

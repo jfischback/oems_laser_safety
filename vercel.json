@@ -41,6 +41,11 @@
       "permanent": false
     },
     {
+      "source": "/validation",
+      "destination": "/validation/",
+      "permanent": false
+    },
+    {
       "source": "/laser-hazard-evaluation/:path*",
       "destination": "/assessment/",
       "permanent": false
@@ -85,6 +90,10 @@
       "destination": "/register/index.html"
     },
     {
+      "source": "/validation/",
+      "destination": "/validation/index.html"
+    },
+    {
       "source": "/assessment/:path+",
       "destination": "/assessment/:path+"
     },
@@ -115,6 +124,10 @@
     {
       "source": "/register/:path+",
       "destination": "/register/:path+"
+    },
+    {
+      "source": "/validation/:path+",
+      "destination": "/validation/:path+"
     }
   ]
 }

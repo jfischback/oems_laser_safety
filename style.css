@@ -245,6 +245,7 @@ ul.list li { padding: 8px 0; border-bottom: 1px solid var(--line); }
 
 /* Laser risk register (styles from the chemical tool's register page) */
 body[data-tool="register"] main { max-width: 1400px; }
+body[data-tool="validation"] main { max-width: 1100px; }
   .rlead { margin: 0 0 18px; color: #4b5563; }
   .rbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
   .rbtn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid #d5dbe5; background: #fff; font: inherit; font-weight: 600; color: #111827; text-decoration: none; cursor: pointer; }
@@ -285,7 +286,7 @@ body[data-tool="register"] main { max-width: 1400px; }
   .reg-rep-btn:has(+ .reg-file:focus-visible) { outline: 2px solid #2563eb; outline-offset: 2px; }
   .reg-empty { margin: 0; padding: 28px; color: #4b5563; }
   .rnote2 { margin-top: 14px; font-size: .82rem; color: #4b5563; }
-@media print { body[data-tool="register"] > *:not(.report) { display: revert !important; } }
+@media print { body[data-tool="register"] > *:not(.report), body[data-tool="validation"] > *:not(.report) { display: revert !important; } }
 .lead-link { display: inline-block; margin: 10px 0 0 14px; font-weight: 600; white-space: nowrap; }
 .rbtn.pri { background: #0f2b55; border-color: #0f2b55; color: #fff; }
 
@@ -312,3 +313,20 @@ body[data-tool="register"] main { max-width: 1400px; }
 .lhe-jump a { padding: 5px 10px; border: 1px solid #d5dbe5; border-radius: 999px; font-size: .82rem; text-decoration: none; white-space: nowrap; }
 .linklike { all: unset; color: #1d4ed8; text-decoration: underline; cursor: pointer; }
 .linklike:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+/* Validation record */
+.val-sum { margin: 0 0 18px; padding: 12px 14px; border: 1px solid #b7dfc4; border-radius: 10px; background: #eef8f1; }
+.val-list { padding-left: 20px; } .val-list li { margin: 4px 0; }
+table.val { width: 100%; min-width: 760px; table-layout: fixed; border-collapse: collapse; font-size: .84rem; }
+.val th:nth-child(1) { width: 20%; } .val th:nth-child(2) { width: 27%; } .val th:nth-child(3) { width: 12%; } .val th:nth-child(4) { width: 11%; } .val th:nth-child(5) { width: 11%; }
+.val th, .val td { padding: 7px 9px; border-bottom: 1px solid #e6eaf1; text-align: left; vertical-align: top; }
+.val thead th { background: #0f2b55; color: #fff; }
+.val-g th { background: #f1f4f9; font-size: .9rem; }
+.val-diff td { background: #fff7ed; }
+.val-sign { max-width: 560px; margin: 18px 0; } .val-sign td { height: 34px; }
+@media print {
+  body[data-tool="validation"] > *:not(main):not(.report), body[data-tool="validation"] .rbar, body[data-tool="validation"] .back { display: none !important; }
+  body[data-tool="validation"] main { max-width: none; margin: 0; padding: 0; box-shadow: none; border: 0; }
+  body[data-tool="validation"] .rscroll { overflow: visible; border: 0; }
+  table.val { font-size: 8pt; min-width: 0; } .val tr { break-inside: avoid; } .val th, .val td { padding: 4px 6px; border-bottom: 1px solid #bbb; }
+  .val thead th { background: #fff; color: #000; border-bottom: 2px solid #000; }
+}
