@@ -3,6 +3,7 @@ import { mpe as tableMPE, multiPulseMPE, skinMPE } from "./mpe.js";
 import { QUESTIONS, NONBEAM, LOTO, effectiveClass, calcRequired, beamControlsApply, closedApplies, riskTier } from "./questions.js";
 import { DIAGRAMS } from "../diagram.js";
 import { addRow } from "../register/store.js";
+import { inventoryRow, eyewearRow, sopDraft, tsv } from "./paperwork.js";
 
 const $ = id => document.getElementById(id);
 const num = id => {
@@ -215,8 +216,39 @@ function update() {
   $("tier").innerHTML = `<span class="tier-k">Risk</span><span class="tier-v">${t.tier}</span><span class="tier-why">${t.reasons.map(esc).join(" ")}${reqCalcMissing ? " The required calculations in section 4 are not complete yet." : ""}</span>`
     + (t.missing ? `<details><summary>What is still missing</summary><ul>${t.missing.map(m => `<li>${esc(m)}</li>`).join("")}</ul></details>` : "");
   $("findings").innerHTML = (t.findings || []).map(f => `<li><strong>${esc(f.text)}</strong><br>${esc(f.rec)}</li>`).join("");
-  return { a, c, t, req, reqCalcMissing };
+  const out = { a, c, t, req, reqCalcMissing };
+  drawPaperwork(out);
+  return out;
 }
+
+// ---------- Program paperwork (paperwork.js): inventory row, eyewear line, SOP draft ----------
+function paperData({ a, c, t, req }) {
+  const v = id => $(id).value.trim(), mode = $("mode").value;
+  const status = h => a[`nb_${h.id}`] === "yes" ? (a[`nbc_${h.id}`] === "yes" ? "Present, controlled" : a[`nbc_${h.id}`] === "no" ? "Present, NOT controlled" : "Present") : a[`nb_${h.id}`] === "no" ? "Not present" : "Not answered";
+  return {
+    name: v("name"), loc: v("loc"), mfr: v("mfr"), model: v("model"), cls: a.cls, e: effectiveClass(a), nm: v("nm"),
+    output: mode === "cw" ? (v("power") ? `${v("power")} W` : "") : (v("energy") ? `${v("energy")} J per pulse${mode === "rep" && v("prf") ? ` at ${v("prf")} Hz` : ""}` : ""),
+    date: v("date"), by: v("by"), a, req, tier: t.tier,
+    calcDone: !!(c.ok && c.r.od !== undefined && c.r.nohd !== undefined), need: c.ok ? c.requiredOD : 0,
+    eyeModel: v("eyeModel"), eyeOD: a.eyeOD,
+    hazardRows: c.ok ? c.rows.filter(([k, val]) => /NOHD|NHZ|hazard distance/.test(k) && !/^enter /.test(val)) : [],
+    nonbeam: NONBEAM.map(h => ({ name: h.name, status: status(h), notes: v(`nbn_${h.id}`) })),
+    controls: ALL_Q.filter(x => x.show(a) && a[x.id]).map(x => [x.text, { yes: "Yes", no: "No", na: "N/A" }[a[x.id]], x.id]),
+  };
+}
+let paper = null;
+function drawPaperwork(state) {
+  paper = paperData(state);
+  const table = row => row.map(([k, val]) => `<tr><th>${esc(k)}</th><td>${val ? esc(val) : '<span class="pw-blank">blank</span>'}</td></tr>`).join("");
+  $("pwInv").innerHTML = table(inventoryRow(paper));
+  $("pwEye").innerHTML = table(eyewearRow(paper));
+}
+async function copyRow(row, msgId, done) {
+  try { await navigator.clipboard.writeText(tsv(row)); $(msgId).textContent = done; }
+  catch (e) { $(msgId).textContent = "Could not copy: this browser is not allowing the clipboard. Type the values from the table above."; }
+}
+$("pwInvCopy").addEventListener("click", () => copyRow(inventoryRow(paper), "pwInvMsg", "Row copied. Paste into the first cell of an empty row on the Register tab of Appendix A."));
+$("pwEyeCopy").addEventListener("click", () => copyRow(eyewearRow(paper), "pwEyeMsg", "Line copied."));
 
 document.addEventListener("input", e => { if (e.target.closest("#lhe")) update(); });
 document.addEventListener("change", e => { if (e.target.closest("#lhe")) update(); });
@@ -326,8 +358,13 @@ function buildReport() {
   <p class="rfoot">An owner self-assessment based on the preparer's answers, not a professional evaluation by OEMS. The results depend on those answers and are to be reviewed and signed by the Laser Safety Officer before they are relied on. The Laser Safety Officer approves the eyewear for each application. © 2026 Occupational Exposure Management Systems LLC.</p>`;
 }
 
-$("print").addEventListener("click", () => { buildReport(); window.print(); });
-window.addEventListener("beforeprint", buildReport);
+// Printing shows the assessment report, or the SOP draft when its button was used.
+let printing = "report";
+const buildPrint = () => { if (printing === "sop") { update(); $("report").innerHTML = sopDraft(paper); } else buildReport(); };
+$("print").addEventListener("click", () => { printing = "report"; buildPrint(); window.print(); });
+$("pwSop").addEventListener("click", () => { printing = "sop"; buildPrint(); window.print(); });
+window.addEventListener("beforeprint", buildPrint);
+window.addEventListener("afterprint", () => { printing = "report"; });
 
 
 // ---------- Risk register: add this laser as one row (kept in this browser; register/store.js) ----------

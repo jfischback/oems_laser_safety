@@ -288,3 +288,18 @@ body[data-tool="register"] main { max-width: 1400px; }
 @media print { body[data-tool="register"] > *:not(.report) { display: revert !important; } }
 .lead-link { margin-left: 14px; font-weight: 600; }
 .rbtn.pri { background: #0f2b55; border-color: #0f2b55; color: #fff; }
+
+/* Program paperwork on the assessment page */
+#paperwork h3 { margin: 18px 0 6px; font-size: 1rem; }
+.pw { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.pw th, .pw td { padding: 6px 8px; border: 1px solid #dde2ec; text-align: left; vertical-align: top; }
+.pw th { width: 48%; background: #f6f8fb; font-weight: 600; }
+.pw-blank { color: #8a94a6; font-style: italic; }
+@media print {
+  .report .kv th { width: 34%; }
+  .report .steps th:nth-child(1) { width: 9%; } .report .steps th:nth-child(3) { width: 34%; }
+  .report .steps td, .report .tall td { height: 30px; }
+  .report ul { margin: 2px 0; padding-left: 18px; }
+  .report h2, .report h3 { break-after: avoid; }
+  .report .tall { break-inside: avoid; }
+}
