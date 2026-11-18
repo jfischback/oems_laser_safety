@@ -53,6 +53,7 @@ ${COPYRIGHT}
 // app.js; its page body lives in partials/<slug>.html.
 const TOOLS = [
   { slug: "assessment", name: "Laser Safety Assessment", group: "Assessment" },
+  { slug: "register", name: "Laser Risk Register", group: "Assessment" },
 ];
 for (const t of TOOLS) {
   writeFileSync(new URL(`${t.slug}/index.html`, root), page(
@@ -62,7 +63,7 @@ for (const t of TOOLS) {
 const list = `<div class="lead-tool">
 <h2>Laser Safety Assessment</h2>
 <p>One laser at a time: the questions, the beam calculations (MPE, eyewear OD, NOHD and hazard zones), a High, Medium or Low risk ranking, and a printable report with the calculation record.</p>
-<p><a class="lead-btn" href="assessment/">Start an assessment</a></p>
+<p><a class="lead-btn" href="assessment/">Start an assessment</a> <a class="lead-link" href="register/">Laser risk register</a></p>
 </div>
 <h2>Laser calculators</h2>
 <p class="how">Each calculator solves for whichever value you leave blank. The assessment uses the same equations.</p>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laser Risk Register | OEMS Laser Safety</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../disclaimer.css">
+<script>try { if (localStorage.getItem("oems_disclaimer_v1")) document.documentElement.classList.add("oems-agreed"); } catch (e) {}</script>
+</head>
+<body data-tool="register">
+  <div class="oems-gate" id="oemsGate">
+    <div class="oems-gate-bar">
+      <div class="oems-gate-brand">
+        <span class="oems-gate-name">OEMS</span>
+        <span class="oems-gate-full">Occupational Exposure Management Systems LLC</span>
+      </div>
+    </div>
+    <div class="oems-gate-card" role="dialog" aria-modal="true" aria-labelledby="oemsGateTitle" tabindex="-1">
+      <h2 id="oemsGateTitle">Before you use this tool</h2>
+      <p>This calculator is provided by OEMS (Occupational Exposure Management Systems) for general informational and educational purposes only. It is not professional industrial hygiene, medical, engineering, or legal advice, and it does not replace an evaluation by a qualified professional.</p>
+      <p>Results depend entirely on the information you enter and on the assumptions built into the tool. They may be incomplete, inaccurate, or not applicable to your workplace. You are responsible for verifying all results against applicable regulations (including OSHA standards), manufacturer data, and your organization’s requirements before relying on them.</p>
+      <p>Do not use this tool as the sole basis for decisions that affect worker health or safety, including laser eyewear selection, hazard zones, or demonstrating compliance with ANSI Z136.1.</p>
+      <p>OEMS makes no warranties, express or implied, about the accuracy, completeness, or fitness for a particular purpose of this tool or its results. To the fullest extent permitted by law, OEMS is not liable for any loss, injury, or damage arising from use of, or reliance on, this tool.</p>
+      <label class="oems-gate-check"><input type="checkbox" id="oemsGateCheck"> <span>I have read and understand this disclaimer, and I agree to use this tool at my own risk.</span></label>
+      <button type="button" class="oems-gate-btn" id="oemsGateBtn" disabled>I agree — continue</button>
+    </div>
+  </div>
+  <script src="../disclaimer.js"></script>
+
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <span class="brand-name">OEMS</span>
+        <span class="brand-full">Occupational Exposure Management Systems LLC</span>
+      </div>
+      <div class="oems-right">
+        <div class="tag">Exposure assessment tools for Health &amp; Safety Professionals</div>
+        <a class="alltools" href="https://oemstoolsearch.vercel.app/">← All OEMS tools</a>
+      </div>
+    </div>
+  </header>
+
+<main>
+<a class="back" href="../">All laser safety tools</a>
+<h1>Laser risk register</h1>
+<p class="rlead">One row for each laser you added from its assessment. The risk comes first. Click a column heading to sort. Type the action needed, its owner and a due date straight into the row.</p>
+<div class="rbar">
+  <button type="button" class="rbtn pri" id="regDownload">Download as Excel</button>
+  <label class="rbtn" for="regLoad">Load from Excel</label>
+  <input id="regLoad" type="file" accept=".xlsx" class="reg-file">
+  <a class="rbtn" href="../assessment/">Back to the assessment</a>
+  <span id="regCount"></span>
+  <span id="regSaved" aria-live="polite"></span>
+</div>
+<div class="rscroll" id="regTable"></div>
+<p class="rnote2">The register is kept in this browser on this computer only. It is not sent to OEMS or anywhere else. Clearing the browser's data removes it, so download the Excel file to keep a copy. “Load from Excel” brings a downloaded register back, here or on another computer. The original and signed report files are kept with the register in this browser; the Excel file lists their names but does not hold the files, so keep your own copies.</p>
+<p class="copyright">© 2026 Occupational Exposure Management Systems LLC. All rights reserved.</p>
+</main>
+<script type="module" src="app.js"></script>
+
+</body>
+</html>

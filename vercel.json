@@ -36,6 +36,11 @@
       "permanent": false
     },
     {
+      "source": "/register",
+      "destination": "/register/",
+      "permanent": false
+    },
+    {
       "source": "/laser-hazard-evaluation/:path*",
       "destination": "/assessment/",
       "permanent": false
@@ -76,6 +81,10 @@
       "destination": "/optical-density/index.html"
     },
     {
+      "source": "/register/",
+      "destination": "/register/index.html"
+    },
+    {
       "source": "/assessment/:path+",
       "destination": "/assessment/:path+"
     },
@@ -102,6 +111,10 @@
     {
       "source": "/optical_density/:path+",
       "destination": "/optical-density/:path+"
+    },
+    {
+      "source": "/register/:path+",
+      "destination": "/register/:path+"
     }
   ]
 }

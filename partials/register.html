@@ -1,0 +1,17 @@
+<main>
+<a class="back" href="../">All laser safety tools</a>
+<h1>Laser risk register</h1>
+<p class="rlead">One row for each laser you added from its assessment. The risk comes first. Click a column heading to sort. Type the action needed, its owner and a due date straight into the row.</p>
+<div class="rbar">
+  <button type="button" class="rbtn pri" id="regDownload">Download as Excel</button>
+  <label class="rbtn" for="regLoad">Load from Excel</label>
+  <input id="regLoad" type="file" accept=".xlsx" class="reg-file">
+  <a class="rbtn" href="../assessment/">Back to the assessment</a>
+  <span id="regCount"></span>
+  <span id="regSaved" aria-live="polite"></span>
+</div>
+<div class="rscroll" id="regTable"></div>
+<p class="rnote2">The register is kept in this browser on this computer only. It is not sent to OEMS or anywhere else. Clearing the browser's data removes it, so download the Excel file to keep a copy. “Load from Excel” brings a downloaded register back, here or on another computer. The original and signed report files are kept with the register in this browser; the Excel file lists their names but does not hold the files, so keep your own copies.</p>
+<p class="copyright">© 2026 Occupational Exposure Management Systems LLC. All rights reserved.</p>
+</main>
+<script type="module" src="app.js"></script>

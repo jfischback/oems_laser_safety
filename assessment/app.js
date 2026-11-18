@@ -2,6 +2,7 @@ import { evaluate, defaultExposure, defaultAperture, toOneOverE, roundOD } from 
 import { mpe as tableMPE, multiPulseMPE, skinMPE } from "./mpe.js";
 import { QUESTIONS, NONBEAM, LOTO, effectiveClass, calcRequired, beamControlsApply, closedApplies, riskTier } from "./questions.js";
 import { DIAGRAMS } from "../diagram.js";
+import { addRow } from "../register/store.js";
 
 const $ = id => document.getElementById(id);
 const num = id => {
@@ -327,6 +328,36 @@ function buildReport() {
 
 $("print").addEventListener("click", () => { buildReport(); window.print(); });
 window.addEventListener("beforeprint", buildReport);
+
+
+// ---------- Risk register: add this laser as one row (kept in this browser; register/store.js) ----------
+function registerRow() {
+  const { a, c, t, req, reqCalcMissing } = update();
+  const f = t.findings || [], e = effectiveClass(a), mode = $("mode").value;
+  const v = id => $(id).value.trim(), yn = x => ({ yes: "Yes", no: "No" }[x] || "");
+  const rated = Number(a.eyeOD), need = c.ok ? c.requiredOD : 0;
+  const nohd = c.ok ? (c.rows.find(r => r[0] === "NOHD, direct beam") || [])[1] : "";
+  return {
+    risk: t.tier, laserId: v("name"), date: v("date"), preparedBy: v("by"), role: $("role").value, location: v("loc"),
+    manufacturer: v("mfr"), model: v("model"), serial: v("serial"),
+    labelClass: a.cls, assessedClass: e, wavelength: v("nm"), mode: $("mode").options[$("mode").selectedIndex].text,
+    output: mode === "cw" ? (v("power") ? `${v("power")} W` : "") : (v("energy") ? `${v("energy")} J per pulse` : ""),
+    beamNormal: yn(a.open), beamService: yn(a.service),
+    why: t.reasons.join(" "), nFindings: t.missing ? "" : String(f.length),
+    topFindings: f.slice(0, 3).map(x => x.text).join("; "),
+    nonBeam: f.filter(x => x.id.startsWith("nb_")).map(x => x.text.replace(/^Uncontrolled non-beam hazard: /, "").replace(/\.$/, "")).join("; "),
+    calcs: req ? (reqCalcMissing ? "Required, not complete" : "Required, complete") : (c.ok ? "Optional, done" : "Optional, not done"),
+    requiredOD: c.ok && c.r.od !== undefined ? (need > 0 ? `OD ${need} at ${fmt(c.input.nm)} nm` : "None needed") : "",
+    eyewear: a.eyewear === "yes" ? [v("eyeModel"), a.eyeOD ? `OD ${a.eyeOD}` : ""].filter(Boolean).join(", ") : "",
+    eyewearOk: a.eyewear === "yes" && need > 0 ? (rated >= need ? "Yes" : rated > 0 ? "No" : "Not checked") : "",
+    nohd: nohd && !/enter the/.test(nohd) ? nohd : "",
+    reportOriginal: "", reportSigned: "", addedAt: new Date().toISOString(),
+  };
+}
+$("regAdd").addEventListener("click", () => {
+  const how = addRow(registerRow());
+  $("regMsg").textContent = how === "added" ? "Added to the register." : how === "updated" ? "Already in the register: its row was updated." : "Could not save: this browser is not allowing storage.";
+});
 
 // ---------- Shareable link: answers and numbers only, never names, model, serial, location or notes ----------
 const SHARE_IDS = ["cls", "clsIn", "nm", "mode", "power", "energy", "tp", "prf", "dia", "div", "basis", "viewing", "T", "Df", "mpe", "f0", "b0", "fiber", "NA", "w0", "rho", "theta", "eyeOD",

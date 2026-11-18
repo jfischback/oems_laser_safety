@@ -6,6 +6,7 @@ OEMS Laser Safety: the Laser Safety Assessment and the laser calculators.
   - `questions.js`: the questions, the gates (which questions and calculations apply), findings and the risk tier.
   - `calc.js`, `mpe.js`: the beam math and the ANSI MPE tables (moved from oems_radiation's Laser Hazard Evaluation).
   - `app.js`: the page and the report.
+- `register/`: the laser risk register, built the same way as the chemical tool's register (non_man_exposure_assessment). One row per laser, added from the assessment with "Add to register"; kept in the browser only, with Excel download and load, follow-up columns, and the original and signed report files.
 - Six laser calculators (NHZ direct beam, lens, diffuse, Ds, beam diameter, eyewear OD), defined in `calculators.js` and drawn by `diagram.js`.
 
 ## Changing things

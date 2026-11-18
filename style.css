@@ -242,3 +242,49 @@ ul.list li { padding: 8px 0; border-bottom: 1px solid var(--line); }
 .lead-tool { margin: 18px 0 26px; padding: 18px; border: 1px solid var(--solved-line); border-radius: 12px; background: var(--solved); }
 .lead-tool h2 { margin-top: 0; }
 .lead-btn { display: inline-block; padding: 10px 18px; border-radius: 8px; background: #0f766e; color: #fff !important; font-weight: 700; text-decoration: none; }
+
+/* Laser risk register (styles from the chemical tool's register page) */
+body[data-tool="register"] main { max-width: 1400px; }
+  .rlead { margin: 0 0 18px; color: #4b5563; }
+  .rbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .rbtn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid #d5dbe5; background: #fff; font: inherit; font-weight: 600; color: #111827; text-decoration: none; cursor: pointer; }
+  .rbtn.pri { background: #0f2b55; border-color: #0f2b55; color: #fff; }
+  .rbtn:disabled { opacity: .5; cursor: not-allowed; }
+  #regCount { color: #4b5563; font-size: .9rem; }
+  .rscroll { overflow-x: auto; background: #fff; border: 1px solid #dde2ec; border-radius: 12px; }
+  table.reg { border-collapse: separate; border-spacing: 0; font-size: .86rem; }
+  .reg th, .reg td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid #e6eaf1; min-width: 130px; max-width: 320px; }
+  .reg th { background: #0f2b55; color: #fff; font-weight: 600; white-space: nowrap; position: sticky; top: 0; }
+  .reg th:nth-child(-n+2), .reg td:nth-child(-n+2) { position: sticky; background: #fff; z-index: 1; min-width: 132px; max-width: 132px; }
+  .reg th:nth-child(-n+2) { background: #0f2b55; z-index: 2; white-space: normal; }
+  .reg th:nth-child(1), .reg td:nth-child(1) { left: 0; }
+  .reg th:nth-child(2), .reg td:nth-child(2) { left: 132px; border-right: 2px solid #dde2ec; }
+  .reg-risk { display: inline-block; padding: 6px 12px; border-radius: 8px; font-size: 1rem; font-weight: 700; white-space: nowrap; }
+  .reg-sort { all: unset; cursor: pointer; font: inherit; font-weight: 600; color: #fff; }
+  .reg-sort:focus-visible { outline: 2px solid #93c5fd; outline-offset: 3px; border-radius: 4px; }
+  .reg-clip { all: unset; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
+  .reg-clip.open { display: block; }
+  .reg-clip:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; border-radius: 4px; }
+  .reg-in { width: 100%; min-width: 150px; min-height: 40px; box-sizing: border-box; padding: 8px 10px; border: 1px solid #c9d0de; border-radius: 8px; background: #f8fafc; font: inherit; color: #111827; resize: vertical; }
+  .reg-in:focus-visible { outline: 2px solid #2563eb; outline-offset: 1px; background: #fff; }
+  textarea.reg-in { min-width: 280px; }
+  .reg th:last-child, .reg-rm { min-width: 190px; }
+  .reg-rm span { display: block; margin-bottom: 6px; }
+  .reg-rm button { min-height: 36px; padding: 0 12px; border: 1px solid #c9d0de; border-radius: 8px; background: #fff; font: inherit; font-size: .84rem; font-weight: 600; color: #111827; cursor: pointer; }
+  .reg-rm .reg-rm-yes { border-color: #b91c1c; color: #b91c1c; }
+  .reg-file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .reg-file:focus-visible + a, label.rbtn:has(+ .reg-file:focus-visible) { outline: 2px solid #2563eb; outline-offset: 2px; }
+  #regSaved { color: #4b5563; font-size: .9rem; }
+  /* On a phone the two pinned rating columns filled the screen, so the other columns could not be seen. */
+  @media (max-width: 640px) { .reg th:nth-child(-n+2), .reg td:nth-child(-n+2) { position: static; } .reg th:nth-child(2), .reg td:nth-child(2) { border-right: 0; } }
+  .reg-rep { min-width: 190px; }
+  .reg-rep-lock { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #eef2f7; color: #4b5563; font-size: .78rem; font-weight: 600; }
+  .reg-rep-open { all: unset; display: block; margin-bottom: 6px; color: #1d4ed8; text-decoration: underline; cursor: pointer; overflow-wrap: anywhere; }
+  .reg-rep-open:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; border-radius: 4px; }
+  .reg-rep-btn { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid #c9d0de; border-radius: 8px; background: #fff; font-size: .84rem; font-weight: 600; cursor: pointer; }
+  .reg-rep-btn:has(+ .reg-file:focus-visible) { outline: 2px solid #2563eb; outline-offset: 2px; }
+  .reg-empty { margin: 0; padding: 28px; color: #4b5563; }
+  .rnote2 { margin-top: 14px; font-size: .82rem; color: #4b5563; }
+@media print { body[data-tool="register"] > *:not(.report) { display: revert !important; } }
+.lead-link { margin-left: 14px; font-weight: 600; }
+.rbtn.pri { background: #0f2b55; border-color: #0f2b55; color: #fff; }
