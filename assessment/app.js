@@ -1,5 +1,5 @@
 import { evaluate, defaultExposure, defaultAperture, toOneOverE, roundOD } from "./calc.js";
-import { mpe as tableMPE, multiPulseMPE } from "./mpe.js";
+import { mpe as tableMPE, multiPulseMPE, skinMPE } from "./mpe.js";
 import { QUESTIONS, NONBEAM, LOTO, effectiveClass, calcRequired, beamControlsApply, closedApplies, riskTier } from "./questions.js";
 import { DIAGRAMS } from "../diagram.js";
 
@@ -133,6 +133,27 @@ function calculate() {
   if (r.nhzDiffuse !== undefined) rows.push(["NHZ, diffuse reflection", dist(r.nhzDiffuse)]);
   if (r.nhzSpecular !== undefined) rows.push(["NHZ, specular (mirror-like) reflection", dist(r.nhzSpecular)]);
 
+  // Skin (Tables 9a and 9c): exposure at the laser output, averaged over the skin aperture,
+  // against the skin MPE for T (CW) or the pulse duration (single pulse), and the distance
+  // along the beam where it falls below. Repetitive pulses need Section 8.4.1, not added yet.
+  let skin = null;
+  if (mode === "rep") skin = { note: "Skin MPE for repetitive pulses needs the multiple-pulse rules of ANSI Section 8.4.1, not added yet." };
+  else {
+    const ts = mode === "cw" ? num("T") : num("tp");
+    const s = input.nm > 0 && ts > 0 ? skinMPE(input.nm, ts) : null;
+    if (s && s.H > 0) {
+      const lim = mode === "cw" ? s.E : s.H, d = Math.max(s.aperture / 10, input.a);
+      const e = input.q / (Math.PI * (d / 2) ** 2);
+      const inside = (4 * input.q) / (Math.PI * lim) - input.a * input.a;
+      skin = { mpe: lim, row: s.row, aperture: s.aperture, exposure: e, ratio: e / lim,
+        dist: input.phi ? (inside > 0 ? Math.sqrt(inside) / input.phi : 0) : undefined };
+      rows.push([`Skin MPE (${s.aperture} mm aperture)`, `${fmt(lim)} ${unitE}<br><small>${s.row}</small>`]);
+      rows.push(["Skin exposure at the laser output", `${fmt(e)} ${unitE} (${e > lim ? `${fmt(e / lim)}× the skin MPE` : "below the skin MPE"})`]);
+      if (skin.dist !== undefined) rows.push(["Skin hazard distance along the beam", dist(skin.dist)]);
+    } else if (s && s.needs) skin = { note: `Skin MPE at this wavelength needs ${s.needs}, not added yet.` };
+  }
+  if (skin && skin.note) rows.push(["Skin MPE", skin.note]);
+
   const diagrams = w => {
     const parts = [];
     if (r.nohd > 0) parts.push(DIAGRAMS["laser-nhz-direct-beam"]({ a: input.a, phi: input.phi, rNHZ: r.nohd }, w));
@@ -141,7 +162,7 @@ function calculate() {
     if (r.od > 0) parts.push(DIAGRAMS["optical-density"]({ I0: r.exposure, I: mpeShown, OD: r.odExact, unit: unitE }, w));
     return parts.filter(Boolean);
   };
-  return { ok: true, r, input, rows, eyewear, eyewearSub, diagrams, requiredOD: r.od > 0 ? r.od : 0, mpeNote: $("mpeNote").textContent };
+  return { ok: true, r, input, rows, skin, eyewear, eyewearSub, diagrams, requiredOD: r.od > 0 ? r.od : 0, mpeNote: $("mpeNote").textContent };
 }
 
 // ---------- Screen ----------

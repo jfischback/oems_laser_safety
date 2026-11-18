@@ -1,4 +1,4 @@
-import { mpe, multiPulseMPE } from "../assessment/mpe.js";
+import { mpe, multiPulseMPE, skinMPE } from "../assessment/mpe.js";
 const res = [];
 const ok = (name, cond, got) => res.push([cond ? "PASS" : "FAIL", name, got]);
 const rel = (a, b, tol = 0.01) => Math.abs(a - b) / b <= tol;
@@ -46,5 +46,18 @@ mp = multiPulseMPE(10600, 1e-4, 1000, 10);
 ok("CO₂ 1 kHz: Rule 2 per pulse × PRF ≈ 0.1 W/cm²", rel(mp.H * 1000, 0.1, 0.01), [mp.H * 1000]);
 ok("1064 nm pulsed needs Table 8a", !!multiPulseMPE(1064, 1e-8, 1e5, 10).needs, "");
 ok("Overlapping pulses are refused", !!multiPulseMPE(532, 1e-6, 2e6, 0.25).outOfRange, "");
+// Skin (Tables 9a and 9c), checked against the photographed pages.
+let sk = skinMPE(355, 1e-8);
+ok("skin 355 nm, 10 ns: 0.56·t^0.25", rel(sk.H, 0.56 * 1e-8 ** 0.25, 1e-9), sk);
+sk = skinMPE(355, 100);
+ok("skin 355 nm, 100 s: 1.0 J/cm²", rel(sk.H, 1.0, 1e-9), sk);
+sk = skinMPE(355, 5000);
+ok("skin 355 nm, 5000 s: 1 mW/cm² (Table 9a, differs from eye)", rel(sk.E, 1e-3, 1e-9), sk);
+ok("skin UV-A continuous at 1000 s (1 J/cm² → 1 mW/cm²)", rel(skinMPE(355, 999.999).H, skinMPE(355, 1000).H, 0.01), "");
+sk = skinMPE(10600, 10);
+ok("skin CO₂ 10 s: 0.1 W/cm²", rel(sk.E, 0.1, 1e-9), sk);
+ok("skin CO₂ aperture 3.5 mm", skinMPE(10600, 10).aperture === 3.5, "");
+ok("skin 200 µm aperture 11 mm", skinMPE(200000, 10).aperture === 11, "");
+ok("skin 1064 nm needs Table 8a", !!skinMPE(1064, 10).needs, "");
 for (const r of res) console.log(r[0], "|", r[1], "|", JSON.stringify(r[2]));
 console.log(res.every(r => r[0] === "PASS") ? "ALL PASS" : "SOME FAILED");

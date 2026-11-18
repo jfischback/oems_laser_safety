@@ -168,3 +168,59 @@ export function multiPulseMPE(l, tp, prf, Tmax) {
   const governing = rule2 && rule2.H < rule1.H ? "Rule 2" : "Rule 1";
   return { H: Math.min(rule1.H, rule2 ? rule2.H : Infinity), rule1, rule2, pulsesInTmax: nIn, governing };
 }
+
+// ---------- Skin MPE, ANSI Z136.1-2022 Tables 9a (180–400 nm) and 9c (1400 nm – 1000 µm) ----------
+// Transcribed from the owner's copy. Table 9b (400–1400 nm) uses C_A from Table 8a, not
+// transcribed yet. Limiting aperture: 3.5 mm, except 11 mm from 100 µm to 1000 µm (Table 9c Note 2).
+const SKIN_9A = [
+  [180, 260, [
+    [1e-13, 1e-11, J(() => 3.0e-4), null, "3.0 × 10⁻⁴ J/cm²"],
+    [1e-11, 1e-9, J(() => 1.0e-3), null, "1.0 × 10⁻³ J/cm²"],
+    [1e-9, 10, J(t => 0.56 * t ** 0.25), J((t, l) => 0.003 * 10 ** (0.033 * (260 - l))), "thermal 0.56·t^0.25 or photochemical 0.003 × 10^0.033(260−λ) J/cm², the lower"],
+    [10, 30000, null, J((t, l) => 0.003 * 10 ** (0.033 * (260 - l))), "photochemical 0.003 × 10^0.033(260−λ) J/cm²"],
+  ]],
+  [260, 302.5, [
+    [1e-13, 1e-11, J(() => 3.0e-4), null, "3.0 × 10⁻⁴ J/cm²"],
+    [1e-11, 1e-9, J(() => 1.0e-3), null, "1.0 × 10⁻³ J/cm²"],
+    [1e-9, 10, J(t => 0.56 * t ** 0.25), J(() => 3.0e-3), "thermal 0.56·t^0.25 or photochemical 3.0 × 10⁻³ J/cm², the lower"],
+    [10, 30000, null, J(() => 3.0e-3), "photochemical 3.0 × 10⁻³ J/cm²"],
+  ]],
+  [302.5, 315, [
+    [1e-13, 1e-11, J(() => 3.0e-4), null, "3.0 × 10⁻⁴ J/cm²"],
+    [1e-11, 1e-9, J(() => 1.0e-3), null, "1.0 × 10⁻³ J/cm²"],
+    [1e-9, 10, J(t => 0.56 * t ** 0.25), J((t, l) => 10 ** (0.2 * (l - 295)) * 1e-4), "thermal 0.56·t^0.25 or photochemical 10^0.2(λ−295) × 10⁻⁴ J/cm², the lower"],
+    [10, 30000, null, J((t, l) => 10 ** (0.2 * (l - 295)) * 1e-4), "photochemical 10^0.2(λ−295) × 10⁻⁴ J/cm²"],
+  ]],
+  [315, 400, [
+    [1e-13, 1e-11, J(() => 3.0e-4), null, "3.0 × 10⁻⁴ J/cm²"],
+    [1e-11, 1e-9, J(() => 1.0e-3), null, "1.0 × 10⁻³ J/cm²"],
+    [1e-9, 10, J(t => 0.56 * t ** 0.25), null, "0.56·t^0.25 J/cm²"],
+    [10, 1000, null, J(() => 1.0), "photochemical 1.0 J/cm²"],
+    [1000, 30000, null, W(() => 1.0e-3), "photochemical 1.0 × 10⁻³ W/cm²"],
+  ]],
+];
+// Table 9c has the same values as Table 7d.
+const SKIN_TABLES = [["9a", SKIN_9A], ["9c", TABLE_7D]];
+
+// Skin MPE for wavelength l (nm) and exposure duration t (s), single exposure or single pulse.
+// Returns { H, E, table, row, aperture (mm) } or { needs } or { outOfRange }.
+export function skinMPE(l, t) {
+  if (!(l > 0) || !(t > 0)) return { outOfRange: "Enter the wavelength and exposure duration." };
+  if (l < 180 || l > 1e6) return { outOfRange: "The skin MPE tables cover 180 nm to 1000 µm." };
+  if (t < 1e-13) return { outOfRange: "Pulses shorter than 100 fs have no MPE in the standard." };
+  if (t > 30000) return { outOfRange: "The skin MPE tables cover up to 30,000 s." };
+  if (l >= 400 && l < 1400) return { needs: "Table 8a (C_A) for Table 9b", table: "9b" };
+  for (const [name, table] of SKIN_TABLES) {
+    for (const [l1, l2, rows] of table) {
+      const lastBand = l2 === 1e6;
+      if (!(l >= l1 && (l < l2 || (lastBand && l <= l2)))) continue;
+      for (const [t1, t2, thermal, photo, text] of rows) {
+        if (!(t >= t1 && (t < t2 || (t2 === 30000 && t <= t2)))) continue;
+        const H = Math.min(...[thermal, photo].filter(Boolean).map(v => toH(v, t, l)));
+        return { H, E: H / t, table: name, aperture: l >= 1e5 ? 11 : 3.5,
+          row: `Table ${name}, ${fmtNm(l1)} to ${fmtNm(l2)}, ${fmtT(t1)} to ${fmtT(t2)} s: ${text}` };
+      }
+    }
+  }
+  return { outOfRange: "No skin MPE row matches these values." };
+}
